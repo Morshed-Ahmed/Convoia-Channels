@@ -141,7 +141,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Application</title>
+    <title>{{groupname | capfirst}}</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -150,7 +150,7 @@
     <style>
       .chat-container {
         max-width: 600px;
-        margin: 30px auto;
+        margin: auto;
         background-color: #ffffff;
         border-radius: 8px;
         box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
@@ -167,164 +167,7 @@
 
       .chat-log-container {
         padding: 20px;
-        height: 300px;
-        overflow-y: auto;
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #e0e0e0;
-        font-size: 0.9rem;
-      }
-
-      .chat-log p {
-        margin-bottom: 10px;
-      }
-
-      .chat-input-container {
-        display: flex;
-        padding: 15px;
-        background-color: #f8f9fa;
-      }
-
-      .chat-input-container input {
-        flex: 1;
-        border-radius: 0;
-      }
-
-      .chat-input-container button {
-        margin-left: 10px;
-        border-radius: 0;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="chat-container">
-      <header class="chat-header">Chat Room: {{groupname | capfirst}}</header>
-
-      <h1>{{ groupname | json_script:'group-name' }}</h1>
-
-      <div class="chat-log-container" id="chat-log">
-        {% for chat in chats %}
-        <p>
-          <strong>{{ chat.username }}</strong>: {{ chat.content }}
-          <br />
-          <small class="text-muted">
-            {{ chat.timestamp|date:"Y-m-d H:i:s" }}
-          </small>
-        </p>
-        {% endfor %}
-      </div>
-
-      <div class="chat-input-container">
-        <input
-          type="text"
-          id="chat-message-input"
-          class="form-control"
-          placeholder="Type your message here..."
-        />
-        <button id="chat-message-submit" class="btn btn-primary">Send</button>
-      </div>
-    </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const groupNameElement = document.getElementById("group-name");
-
-        if (groupNameElement) {
-          const groupName = JSON.parse(groupNameElement.textContent);
-          console.log(groupName);
-
-          var ws = new WebSocket(
-            "ws://" + window.location.host + "/ws/sc/" + groupName + "/"
-          );
-
-          ws.onopen = function () {
-            console.log("WebSocket connected");
-          };
-
-          ws.onmessage = function (event) {
-            console.log(
-              "Message received from server",
-              JSON.parse(event["data"])
-            );
-            const message = JSON.parse(event["data"]);
-            const timestamp = new Date()
-              .toISOString()
-              .slice(0, 19)
-              .replace("T", " ");
-            document.querySelector("#chat-log").innerHTML +=
-              "<p><strong>" +
-              message.username +
-              "</strong>: " +
-              message.msg +
-              "<br /><small class='text-muted'>" +
-              message.timestamp +
-              "</small></p>";
-            document.querySelector("#chat-log").scrollTop =
-              document.querySelector("#chat-log").scrollHeight;
-          };
-
-          ws.onclose = function (event) {
-            console.error("WebSocket closed");
-          };
-
-          document.getElementById("chat-message-submit").onclick = function (
-            event
-          ) {
-            const messageInputDom =
-              document.getElementById("chat-message-input");
-            const message = messageInputDom.value;
-            ws.send(
-              JSON.stringify({
-                msg: message,
-              })
-            );
-            messageInputDom.value = "";
-          };
-        } else {
-          console.error("Group name element not found");
-        }
-      });
-    </script>
-  </body>
-</html>
-{% endcomment %}
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat Application</title>
-    <!-- Bootstrap CSS -->
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <style>
-      .chat-container {
-        max-width: 600px;
-        margin: 30px auto;
-        background-color: #ffffff;
-        border-radius: 8px;
-        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-
-      .chat-header {
-        background-color: #007bff;
-        color: #ffffff;
-        padding: 15px;
-        text-align: center;
-        font-size: 1.25rem;
-      }
-
-      .chat-log-container {
-        padding: 20px;
-        height: 300px;
+        height: 78dvh;
         overflow-y: auto;
         background-color: #f8f9fa;
         border-bottom: 1px solid #e0e0e0;
@@ -429,6 +272,212 @@
           ws.onclose = function (event) {
             console.error("WebSocket closed");
           };
+
+          document.getElementById("chat-message-submit").onclick = function (
+            event
+          ) {
+            const messageInputDom =
+              document.getElementById("chat-message-input");
+            const message = messageInputDom.value;
+            ws.send(
+              JSON.stringify({
+                msg: message,
+              })
+            );
+            messageInputDom.value = "";
+          };
+        } else {
+          console.error("Group name element not found");
+        }
+      });
+    </script>
+  </body>
+</html>
+{% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{groupname | capfirst}}</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .chat-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .chat-header {
+        background-color: #007bff;
+        color: #ffffff;
+        padding: 15px;
+        text-align: center;
+        font-size: 1.25rem;
+      }
+
+      .chat-log-container {
+        padding: 20px;
+        height: 78dvh;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+        font-size: 0.9rem;
+      }
+
+      .chat-log p {
+        margin-bottom: 10px;
+      }
+
+      .chat-input-container {
+        display: flex;
+        padding: 15px;
+        background-color: #f8f9fa;
+      }
+
+      .chat-input-container input {
+        flex: 1;
+        border-radius: 0;
+      }
+
+      .chat-input-container button {
+        margin-left: 10px;
+        border-radius: 0;
+      }
+
+      .typing-indicator {
+        font-size: 0.8rem;
+        color: #888888;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chat-container">
+      <header class="chat-header">Chat Room: {{groupname | capfirst}}</header>
+
+      <h1>{{ groupname | json_script:'group-name' }}</h1>
+
+      <div class="chat-log-container" id="chat-log">
+        {% for chat in chats %}
+        <p>
+          <strong>{{ chat.username }}</strong>: {{ chat.content }}
+          <br />
+          <small class="text-muted">
+            {{ chat.timestamp|date:"Y-m-d H:i:s" }}
+          </small>
+        </p>
+        {% endfor %}
+      </div>
+
+      <div id="typing-indicator" class="typing-indicator"></div>
+
+      <div class="chat-input-container">
+        <input
+          type="text"
+          id="chat-message-input"
+          class="form-control"
+          placeholder="Type your message here..."
+        />
+        <button id="chat-message-submit" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const groupNameElement = document.getElementById("group-name");
+
+        if (groupNameElement) {
+          const groupName = JSON.parse(groupNameElement.textContent);
+          console.log(groupName);
+
+          const protocol =
+            window.location.protocol === "https:" ? "wss://" : "ws://";
+          var ws = new WebSocket(
+            protocol + window.location.host + "/ws/sc/" + groupName + "/"
+          );
+
+          let typingTimeout = null;
+
+          ws.onopen = function () {
+            console.log("WebSocket connected");
+          };
+
+          ws.onmessage = function (event) {
+            const message = JSON.parse(event["data"]);
+
+            if (
+              message.typing !== undefined &&
+              message.username !== "{{ user.username }}"
+            ) {
+              const typingIndicator =
+                document.getElementById("typing-indicator");
+              if (message.typing) {
+                typingIndicator.textContent = `${message.username} is typing...`;
+              } else {
+                typingIndicator.textContent = "";
+              }
+
+              if (typingTimeout) {
+                clearTimeout(typingTimeout);
+              }
+
+              typingTimeout = setTimeout(() => {
+                typingIndicator.textContent = "";
+              }, 1000); // 1 second timeout after typing stops
+            } else if (message.msg) {
+              document.querySelector("#chat-log").innerHTML +=
+                "<p><strong>" +
+                message.username +
+                "</strong>: " +
+                message.msg +
+                "<br /><small class='text-muted'>" +
+                message.timestamp +
+                "</small></p>";
+              document.querySelector("#chat-log").scrollTop =
+                document.querySelector("#chat-log").scrollHeight;
+
+              // Clear typing indicator when a message is received
+              document.getElementById("typing-indicator").textContent = "";
+            }
+          };
+
+          ws.onclose = function (event) {
+            console.error("WebSocket closed");
+          };
+
+          document
+            .getElementById("chat-message-input")
+            .addEventListener("input", function () {
+              ws.send(
+                JSON.stringify({
+                  typing: true,
+                })
+              );
+            });
+
+          document
+            .getElementById("chat-message-input")
+            .addEventListener("blur", function () {
+              ws.send(
+                JSON.stringify({
+                  typing: false,
+                })
+              );
+            });
 
           document.getElementById("chat-message-submit").onclick = function (
             event
